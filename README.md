@@ -31,7 +31,7 @@ export default class YourRestApi extends RestClient {
   getCurrentUser () {
     // If the request is successful, you can return the expected object
     // instead of the whole response.
-    return this.GET('/auth')
+    return this.GET('/auth').body
       .then(response => response.user);
   }
 };
@@ -41,10 +41,11 @@ Then you can use your custom client like this
 
 ```javascript
 const api = new YourRestApi();
-api.login('johndoe', 'p4$$w0rd')
-  .then(response => response.token)   // Successfully logged in
-  .then(token => saveToken(token))    // Remember your credentials
-  .catch(err => alert(err.message));  // Catch any error
+const promise = api.login('johndoe', 'p4$$w0rd')
+  promise.body.then(response => console.info('body', response)); // return body
+  promise.status.then(response => console.info('status', response)); // status code (etc. 200)
+  promise.success.then(response => console.info('success', response)); // when status code 2xx - true
+  promise.headers.then(response => console.info('headers', response.get('Authorization'))); // response header
 ```
 
 ## Advanced usage
@@ -71,7 +72,7 @@ export default class YourRestApi extends RestClient {
   }
   getWeather (date) {
     // Send the url query as an object
-    return this.GET('/weather', { date })
+    return this.GET('/weather', { date }).body
       .then(response => response.data);
   }
   checkIn (lat, lon) {
@@ -116,7 +117,7 @@ Each one of these methods returns a Promise with the response as the parameter.
 
 ## Limitations
 
-* This library only supports JSON request and response bodies. If the response is not
+* This library only supports JSON request. If the response body is not
 a JSON object, it will throw a JSON parse error. If the response is empty, it will return undefined.
 * It is labeled as _React Native_, even when it has no RN dependencies and could (in theory)
 be used in any JavaScript project. The reason behind this is that the stack used (ES6 and
