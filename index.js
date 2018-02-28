@@ -40,27 +40,13 @@ export default class RestClient {
       Object.assign(opts, { body: JSON.stringify(body) });
     }
     const fetchPromise = () => fetch(fullRoute, opts);
-    const extractResponse = response => 
-      response.text().then(text => text? JSON.parse(text) : undefined);
 
     if (this.devMode && this.simulatedDelay > 0) {
       // Simulate an n-second delay in every request
-      const promise = this._simulateDelay()
+      return this._simulateDelay()
         .then(() => fetchPromise());
-        return {
-          headers: promise.then(response =>  response.headers),
-          body: promise.then(extractResponse),
-          status: promise.then(response =>  response.status),
-          success: promise.then(response =>  response.ok),
-        };
     } else {
-      const promise = fetchPromise();
-      return {
-        headers: promise.then(response =>  response.headers),
-        body: promise.then(extractResponse),
-        status: promise.then(response =>  response.status),
-        success: promise.then(response =>  response.ok),
-      };
+      return fetchPromise();
     }
   }
 
