@@ -32,7 +32,7 @@ export default class YourRestApi extends RestClient {
     // If the request is successful, you can return the expected object
     // instead of the whole response.
     return this.GET('/auth')
-      .then(response => response.status);
+      .then(response => response.body);
   }
 };
 ```
@@ -43,7 +43,12 @@ Then you can use your custom client like this
 const api = new YourRestApi();
 const promise = api.login('johndoe', 'p4$$w0rd');
 
-  promise.then(response => console.info('headers', response.headers.get('Authorization'))); // response header
+  promise.then(response => {
+    console.info('headers', response.headers.get('Authorization')); //responce headers
+    console.info('headers', response.body); // response body
+    console.info('headers', response.status); // status code etc. 200
+    console.info('headers', response.success); // if status 2xx - true
+    });
 ```
 
 ## Advanced usage
